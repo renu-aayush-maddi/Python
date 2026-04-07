@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monthly Sales Report</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 2cm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 10pt;
+                color: #7f8c8d;
+            }
+        }
+
+        body { 
+            font-family: Helvetica, Arial, sans-serif; 
+            color: #333; 
+            line-height: 1.5;
+        }
+        
+        h1 { 
+            color: #2C3E50; 
+            border-bottom: 2px solid #2C3E50; 
+            padding-bottom: 10px; 
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            page-break-inside: avoid;
+        }
+        
+        th,td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        
+        th { background-color: #f8f9fa; }
+        
+        .warning-box { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            padding: 15px; 
+            border-left: 5px solid #ffeeba; 
+            margin-bottom: 20px; 
+        }
+        
+        .chart-container { 
+            text-align: center; 
+            margin-top: 30px; 
+            page-break-before: always; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Monthly Sales & Performance Report</h1>
+
+    {% if declining_regions %}
+    <div class="warning-box">
+        <h3>Attention Required:Regions Missing Targets</h3>
+        <ul>
+        {% for region in declining_regions %}
+            <li>{{ region }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <h2>Revenue Summary</h2>
+    <table>
+        <tr>
+            <th>Region</th>
+            <th>Actual Revenue</th>
+            <th>Target Revenue</th>
+        </tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>${{ "{:,}".format(row[1]) }}</td>
+            <td>${{ "{:,}".format(row[2]) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="chart-container">
+        <h2>Visual Breakdown</h2>
+        <img src="data:image/png;base64,{{ chart }}" alt="Sales Chart" width="600">
+    </div>
+</body>
+</html>
